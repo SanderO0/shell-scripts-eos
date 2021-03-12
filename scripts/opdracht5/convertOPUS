@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Dit is een programma dat recursief alle FLAC en WAV bestanden in een directory omzet naar 2 channel 192 bit VBR OPUS
+# Deze nieuwe OPUS bestanden worden in een nieuwe directory geplaats, maar behouden dezelfde mappen structuur
+# In optie 1 moet het pad naar de directory die de bestanden bevat komen te staan
+
+# Probeer directories "OPUS Bestanden" en "tmpOpus" aan te maken
+mkdir "tmpOpus" || echo "Map bestaat al"
+mkdir "OPUS Bestanden" || echo "Map bestaat al"
+# Vind alle Lossless audio bestanden in de gegeven directory recursief met find
+find "$1" -type f \( -name *.flac -o -name *.wav \) -exec bash -c '
+	# Verzet de placeholder naar een temp variabele zodat ik de suffix kan aanpassen
+	tmp="{}"
+	# Verander suffix van .flac naar .opus en plaats deze string in een nieuwe variabele
+	# Helaas lukte mij dit niet met het pad "$1" omdat het in een ander bash instance zit
+	tmp2="${tmp%.flac}.opus"
+	# Verwijder de naam van het bestand uit de tmp string en plaats deze string in een nieuwe variabele
+	# zodat de directory waar het in geplaatst wordt aangemaakt kan worden
+	tmp3="${tmp%/*.flac}"
+	# Maak de recursieve directory structuur aan om de geconverteerde bestanden in te zetten
+	mkdir -p "tmpOpus$tmp3"
+	# Converteer het bestand naar opus en output naar de tmp directory zodat de structuur behouden blijft
+	opusenc --bitrate 192 --downmix-stereo "$tmp" "tmpOpus$tmp2"
+' \;
+# Verplaats directories en bestanden van de tmp directory naar de "OPUS Bestanden" directory
+# Dit moet gedaan worden omdat het niet lukte het pad uit de variabele tmp2 te halen
+mv "tmpOpus$1"* "OPUS Bestanden/"
+# Verwijder tmp directory met onnodige sub directories die over waren gebleven van het pad
+rm -r "tmpOpus"

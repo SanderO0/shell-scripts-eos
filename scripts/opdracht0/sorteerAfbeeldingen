@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Dit is een programma dat alle JPEG en PNG bestanden verzet naar een nieuwe map "Afbeeldingen"
+# Eerste optie geeft pad naar de directory die de bestanden bevat aan
+# Tweede optie verwisselt tussen de twee manieren om alle bestanden op te vragen (loop of find)
+
+# Probeer een map Afbeeldingen aan te maken, anders print "Map Afbeeldingen bestaat al"
+mkdir Afbeeldingen || echo "Map Afbeeldingen bestaat al"
+if ! [ -n "$1" ]; then
+	# Print error als er geen eerste optie gegeven is
+	echo "Voer pad naar directory in als eerste optie"
+elif ! [ -n "$2" ]; then
+	# Print error als er geen tweede optie gegeven is
+	echo "Voer 'loop' of 'find' in als tweede optie"
+elif [ $2 = 'loop' ]; then
+	# Verzet alle JPEG bestanden naar de map Afbeeldingen
+	for f in $1*.jpg; do mv "$f" Afbeeldingen/ ; done
+
+	# Verzet alle PNG bestanden naar de map Afbeeldingen
+	for f in $1*.png; do mv "$f" Afbeeldingen/ ; done
+elif [ $2 = 'find' ]; then
+	# Find versie van het verzetten van alle JPEG bestanden
+	find $1 -name *.jpg -exec mv {} Afbeeldingen/ \;
+	# Find versie van het verzetten van alle PNG bestanden
+	find $1 -name *.png -exec mv {} Afbeeldingen/ \;
+else
+	# Print error als er geen tweede optie gegeven is
+	echo "Gebruik alleen 'loop' of 'find' als tweede optie"
+fi

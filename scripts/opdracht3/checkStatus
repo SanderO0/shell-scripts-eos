@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Dit is een programma dat een gegeven commando uit probeert te voeren op alle bestanden in een map
+# Per bestand wordt er in een logbestand geschreven of het commando uit te voeren was of niet
+
+# check of er genoeg opties zijn ingevoerd, zo nee geef error
+if ! [ -n "$3" ]; then
+	#|| [ -n "$2" ] || [ -n "$3" ]; then
+	echo "Niet genoeg opties ingevoerd"
+	exit 1
+else
+	# Maak een leeg bestand aan
+	> "$3"
+	# For loop die voor alles onder het pad (niet recursief) het gegeven commando uitvoert en de exit-code echoot naar het log bestand
+	for f in "$1"*; do
+		"$2" "$f"
+		tmp="$?"
+		echo "$f" >> "$3"
+		echo "$tmp" >> "$3"
+	done
+fi

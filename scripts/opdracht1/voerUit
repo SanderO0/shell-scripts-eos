@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# dit is een programma dat afhankelijk van de extensie een script met de juiste interpreter uitvoert
+# Eerste optie moet het pad naar het bestand zijn
+
+# Case expressie
+case $1 in
+
+	# Python
+	*.py)
+		python3 $1
+	;;
+
+	# Bash
+	*.sh)
+		bash $1
+	;;
+
+	# Cat
+	*.cc)
+		cat $1
+	;;
+
+	# Anders
+	*)
+		echo "Dit bestands type is onbekend of wordt niet ondersteund"
+	;;
+esac

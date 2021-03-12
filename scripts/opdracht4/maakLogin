@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Dit is een programma dat een passwordfile aanmaakt met user input
+# Optie 1 moet het bestand en/of pad naar het bestand waar naar geschreven moet worden bevatten
+
+# Vraag om gebruikersnaam en plaats deze in de variabele gebruiker
+echo "Voer hier uw gebruikersnaam in of houd leeg voor default: "
+read gebruiker
+# Als de variabele gebruiker nul is, gebruik whoami om er de default naam aan te geven
+if [ -z $gebruiker ];
+then
+	gebruiker=$(whoami)
+fi
+# Vraag tweemaal om wachtwoord en sla in twee variabelen op
+echo "Voer hier een wachtwoord met minsens 8 characters in: "
+read -s wachtwoord1
+echo "Herhaal hetzelfde wachtwoord: "
+read -s wachtwoord2
+# Check in een while loop of wachtwoorden hetzelfde zijn en langer dan 8 characters, zo nee vraag nogmaals tot het wel zo is
+while [ $wachtwoord1 != $wachtwoord2 ] && ! [ ${#wachtwoord1} -ge 8 ]
+do
+	echo "Het wachtwoord voldoet niet aan de eisen"
+	echo "Voer hier nogmaals een wachtwoord met minsens 8 characters in: "
+	read -s wachtwoord1
+	echo "Herhaal hetzelfde wachtwoord: "
+	read -s wachtwoord2
+done
+# Echo het wachtwoord naar md5sum en zet om in MD5-hash
+# Daarna cut de string op de delimiter ' ', omdat aan het einde de characters "  -" staan
+# output het eerste veld dat geen delimiter bevat en zet deze output in de variabele wachtwoord
+wachtwoord=$(echo $wachtoord1 | md5sum | cut -d ' ' -f 1)
+# Probeer het bestand van de password file aan te maken
+touch $1 || echo "Bestand bestaat al"
+# Zet de variabelen gebruiker en wachtwoord naar het bestand
+echo "$gebruiker" >> $1
+echo "$wachtwoord" >> $1

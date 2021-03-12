@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Dit is een programma dat JPEG bestanden omzet naar een PNG bestand van maximaal 128x128 pixels
+# Ik heb magick gebruikt in plaats van convert, omdat de man-page heeft aangegeven dat dit de vernieuwde variant van convert is
+# Optie 1 moet het pad naar de directory geven waar de afbeeldingen in staan
+
+if ! [ -n "$1" ]; then
+	# Als er geen optie 1 is aangegeven print een foutmelding
+	echo "Voer bij optie 1 het pad naar de directory in"
+else
+	# Converteer alle .jpg afbeeldingen in de directory naar een png van maximaal 128 x 128 pixels
+	for f in $1*.jpg; do magick "$f" -geometry 128x128 "${f%.jpg}.png"; done
+fi
